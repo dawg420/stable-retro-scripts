@@ -8,7 +8,6 @@ import os
 import gymnasium as gym
 import numpy as np
 from gymnasium.wrappers.time_limit import TimeLimit
-# from stable_baselines3 import PPO
 from stable_baselines3 import PPO
 from stable_baselines3.common.atari_wrappers import ClipRewardEnv, WarpFrame
 from stable_baselines3.common.vec_env import (
@@ -161,7 +160,7 @@ def main():
         eval_env, 
         best_model_save_path=easy_log_dir, 
         log_path=easy_log_dir, 
-        eval_freq=10000,  # frequency of evaluations 
+        eval_freq=500,  # frequency of evaluations 
         deterministic=True, 
         render=False 
     ) 
@@ -182,7 +181,7 @@ def main():
     ) 
  
     model.learn( 
-        total_timesteps=1,
+        total_timesteps=200000,
         log_interval=1, 
         callback=eval_callback  # Attach evaluation callback 
     )
@@ -201,7 +200,7 @@ def main():
         eval_env, 
         best_model_save_path=hard_log_dir, 
         log_path=hard_log_dir, 
-        eval_freq=10000,  # frequency of evaluations 
+        eval_freq=500,  # frequency of evaluations 
         deterministic=True, 
         render=False 
     )
@@ -209,7 +208,7 @@ def main():
     prev_model_path = os.path.join(easy_log_dir, "best_model")
     model = PPO.load(os.path.expanduser(prev_model_path), env=train_env, tensorboard_log=hard_log_dir)
     model.learn( 
-        total_timesteps=100000, 
+        total_timesteps=200000, 
         log_interval=1, 
         callback=eval_callback  # Attach evaluation callback 
     )
