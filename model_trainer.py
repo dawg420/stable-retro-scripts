@@ -82,7 +82,7 @@ class ModelTrainer:
         #if self.args.alg_verbose:
         log_path = './logs/'
 
-        eval_callback = EvalCallback(self.env, best_model_save_path=log_path, log_path=log_path, eval_freq=100, deterministic=True, render=False)
+        eval_callback = EvalCallback(self.env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 
         com_print('========= Start Training ==========')
         self.p1_model.learn(total_timesteps=self.args.num_timesteps, log_interval=1, callback=eval_callback)
