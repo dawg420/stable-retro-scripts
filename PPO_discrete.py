@@ -89,7 +89,7 @@ class StochasticFrameSkip(gym.Wrapper):
 def make_retro(*, game, state=None, max_episode_steps=4500, **kwargs):
     if state is None:
         state = retro.State.DEFAULT
-    env = retro.make(game, state, **kwargs)
+    env = retro.make(game, state,render_mode="rgb_array", **kwargs)
     env = StochasticFrameSkip(env, n=4, stickprob=0.25)
     env = MultiBinaryToDiscreteActionWrapper(env)  # Apply the new wrapper
     if max_episode_steps is not None:
@@ -148,7 +148,7 @@ def main():
     eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env] * 8), n_stack=4)) 
  
     # Setup TensorBoard logging 
-    _, log_dir = setup_tensorboard_log() 
+    log_dir = "./logs/"
  
     # Callbacks for evaluation and saving the best model 
     eval_callback = EvalCallback( 
