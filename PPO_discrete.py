@@ -4,6 +4,7 @@ Train an agent using Proximal Policy Optimization from Stable Baselines 3
 
 import argparse
 
+import os
 import gymnasium as gym
 import numpy as np
 from gymnasium.wrappers.time_limit import TimeLimit
@@ -138,24 +139,29 @@ def main():
     parser.add_argument("--scenario", default=None)
     args = parser.parse_args()
 
-    def make_env():
-        env = make_retro(game=args.game, state=args.state, scenario=args.scenario)
+    def make_env_easy():
+        env = make_retro(game=args.game, state="VeryEasy_Yokozuna-03", scenario=args.scenario)
+        env = wrap_deepmind_retro(env)
+        env = Monitor(env)  # Add this line to wrap the environment with Monitor
+        return env
+    def make_env_hard():
+        env = make_retro(game=args.game, state="VeryHard_Yokozuna-03", scenario=args.scenario)
         env = wrap_deepmind_retro(env)
         env = Monitor(env)  # Add this line to wrap the environment with Monitor
         return env
 
-    train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env] * 8), n_stack=4)) 
-    eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env] * 8), n_stack=4)) 
+    train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
+    eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
  
     # Setup TensorBoard logging 
-    log_dir = "./logs/"
+    easy_log_dir = os.path.join(".", "logs", "easy_train")
  
     # Callbacks for evaluation and saving the best model 
     eval_callback = EvalCallback( 
         eval_env, 
-        best_model_save_path=log_dir, 
-        log_path=log_dir, 
-        eval_freq=1000,  # frequency of evaluations 
+        best_model_save_path=easy_log_dir, 
+        log_path=easy_log_dir, 
+        eval_freq=10000,  # frequency of evaluations 
         deterministic=True, 
         render=False 
     ) 
@@ -172,14 +178,41 @@ def main():
         clip_range=0.1, 
         ent_coef=0.01, 
         verbose=1, 
-        tensorboard_log=log_dir 
+        tensorboard_log=easy_log_dir 
     ) 
  
+    model.learn( 
+        total_timesteps=1,
+        log_interval=1, 
+        callback=eval_callback  # Attach evaluation callback 
+    )
+    
+    train_env.close() 
+    eval_env.close()
+    
+    train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_hard] * 8), n_stack=4)) 
+    eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_hard] * 8), n_stack=4)) 
+    
+    # Setup TensorBoard logging 
+    hard_log_dir = os.path.join(".", "logs", "hard_train")
+ 
+    # Callbacks for evaluation and saving the best model 
+    eval_callback = EvalCallback( 
+        eval_env, 
+        best_model_save_path=hard_log_dir, 
+        log_path=hard_log_dir, 
+        eval_freq=10000,  # frequency of evaluations 
+        deterministic=True, 
+        render=False 
+    )
+    
+    prev_model_path = os.path.join(easy_log_dir, "best_model")
+    model = PPO.load(os.path.expanduser(prev_model_path), env=train_env, tensorboard_log=hard_log_dir)
     model.learn( 
         total_timesteps=100000, 
         log_interval=1, 
         callback=eval_callback  # Attach evaluation callback 
-    ) 
+    )
  
     train_env.close() 
     eval_env.close()
