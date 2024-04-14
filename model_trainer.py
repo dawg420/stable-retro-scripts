@@ -63,6 +63,8 @@ class ModelTrainer:
         self.env = init_env(self.output_fullpath, args.num_env, args.state, args.num_players, args)
         
         self.p1_model = init_model(self.output_fullpath, args.load_p1_model, args.alg, args, self.env, logger)
+        
+        self.eval_callback = EvalCallback(self.env, best_model_save_path='./logs/', log_path='./logs/', eval_freq=500, deterministic=True, render=False)
       
         #if self.args.alg_verbose:
         com_print('OUTPUT PATH:   %s' % self.output_fullpath)
@@ -80,12 +82,8 @@ class ModelTrainer:
         
     def train(self):
         #if self.args.alg_verbose:
-        log_path = './logs/'
-
-        eval_callback = EvalCallback(self.env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
-
         com_print('========= Start Training ==========')
-        self.p1_model.learn(total_timesteps=self.args.num_timesteps, log_interval=1, callback=eval_callback)
+        self.p1_model.learn(total_timesteps=self.args.num_timesteps, log_interval=1, callback=self.eval_callback)
         #if self.args.alg_verbose:
         com_print('========= End Training ==========')
 
