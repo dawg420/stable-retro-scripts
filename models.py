@@ -51,7 +51,7 @@ def init_model(output_path, player_model, player_alg, args, env, logger):
         if player_model == '':
             model = A2C(policy=args.nn, env=env, policy_kwargs=policy_kwargs, verbose=1)
         else:
-            model = A2C(policy=args.nn, env=env, verbose=1, tensorboard_log=output_path)
+            model = A2C.load(os.path.expanduser(player_model), env=env)
 
     model.set_logger(logger)
 
