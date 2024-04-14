@@ -23,6 +23,8 @@ import game_wrappers_mgr as games
 
 NUM_TEST_MATCHS = 10
 
+
+
 def parse_cmdline(argv):
     parser = argparse.ArgumentParser()
 
@@ -69,24 +71,14 @@ game_states_veryhard = [
     'VeryHard_Yokozuna-07'
 ]
 
-train_states = [
-    'VeryEasy_Yokozuna-01',
-    'VeryEasy_Yokozuna-02',
-    'VeryEasy_Yokozuna-03',
-    'VeryEasy_Yokozuna-04',
-    'VeryEasy_Yokozuna-05',
-    'VeryHard_Yokozuna-01',
-    'VeryHard_Yokozuna-02',
-    'VeryHard_Yokozuna-03',
-    'VeryHard_Yokozuna-04',
-    'VeryHard_Yokozuna-05',
-]
-
+train_states = [ 
+    'VeryEasy_Yokozuna-03', 
+    'VeryHard_Yokozuna-03', 
+] 
+ 
 test_states = [
-    'VeryHard_Yokozuna-06',
-    'VeryHard_Yokozuna-07',
-    'VeryHard_Yokozuna-06',
-    'VeryHard_Yokozuna-07'
+    'VeryEasy_Yokozuna-04', 
+    'VeryHard_Yokozuna-02', 
 ]
 
 def test_model(args, num_matchs, logger):

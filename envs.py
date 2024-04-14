@@ -14,12 +14,23 @@ from stable_baselines3.common.monitor import Monitor
 
 import gymnasium as gym
 from gymnasium.wrappers import FrameStack
+from gymnasium.spaces import Discrete
+from gymnasium.wrappers.time_limit import TimeLimit
 
 import retro
 
 from models import init_model
 import game_wrappers_mgr as games
 
+class MultiBinaryToDiscreteActionWrapper(gym.ActionWrapper):
+    def __init__(self, env):
+        super().__init__(env)
+        # Assuming env.action_space.n is the number of binary actions
+        self.action_space = Discrete(2 ** env.action_space.n)
+
+    def action(self, action):
+        # Convert a discrete action to a multibinary action
+        return [(action >> i) & 1 for i in range(self.env.action_space.n)]
 
 class StochasticFrameSkip(gym.Wrapper):
     def __init__(self, env, n, stickprob):
@@ -63,10 +74,10 @@ def make_retro(*, game, state=None, num_players, max_episode_steps=4500, **kwarg
     import retro
     if state is None:
         state = retro.State.DEFAULT
-    env = retro.make(game, state, record=True, **kwargs, players=num_players, render_mode="rgb_array")
-    #env = NHL94Discretizer(env)
-    #if max_episode_steps is not None:
-    #    env = TimeLimit(env, max_episode_steps=max_episode_steps)
+    env = retro.make(game, state, **kwargs, players=num_players, render_mode="rgb_array")
+    env = MultiBinaryToDiscreteActionWrapper(env) # Apply discrete wrapper
+    if max_episode_steps is not None:
+       env = TimeLimit(env, max_episode_steps=max_episode_steps)
     return env
 
 def init_env(output_path, num_env, state, num_players, args, use_sticky_action=True, use_display=False, use_frame_skip=True):

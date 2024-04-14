@@ -17,6 +17,7 @@ import numpy as np
 from common import get_model_file_name, com_print, init_logger, create_output_dir
 from models import init_model, print_model_info, get_num_parameters
 from envs import init_env, init_play_env
+from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback
 
 
 def parse_cmdline(argv):
@@ -75,18 +76,25 @@ class ModelTrainer:
 
         print(self.env.observation_space)
 
+    
+        
     def train(self):
         #if self.args.alg_verbose:
+        log_path = './logs/'
+
+        eval_callback = EvalCallback(self.env, best_model_save_path=log_path, log_path=log_path, eval_freq=100, deterministic=True, render=False)
+
         com_print('========= Start Training ==========')
-        self.p1_model.learn(total_timesteps=self.args.num_timesteps)
+        self.p1_model.learn(total_timesteps=self.args.num_timesteps, log_interval=1, callback=eval_callback)
         #if self.args.alg_verbose:
         com_print('========= End Training ==========')
 
-        self.p1_model.save(self.model_savepath )
+        self.p1_model.save(self.model_savepath)
         #if self.args.alg_verbose:
         com_print('Model saved to:%s' % self.model_savepath)
 
         return self.model_savepath
+
 
     def play(self, args, continuous=True):
         #if self.args.alg_verbose:
