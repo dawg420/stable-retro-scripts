@@ -140,14 +140,14 @@ def main(argv):
 
     
     # Test performance of model on each state
-    # com_print('====== TESTING MODEL ======')
-    # for state in test_states:
-    #     num_test_matchs = NUM_TEST_MATCHS
-    #     new_args = args
-    #     new_args.state = state
-    #     won_matchs, total_reward = test_model(new_args, num_test_matchs, logger)
-    #     percentage = won_matchs / num_test_matchs
-    #     com_print('STATE:%s... WON MATCHS:%d/%d TOTAL REWARDS:%d' % (state, won_matchs, num_test_matchs, total_reward))
+    com_print('====== TESTING MODEL ======')
+    for state in test_states:
+        num_test_matchs = NUM_TEST_MATCHS
+        new_args = args
+        new_args.state = state
+        won_matchs, total_reward = test_model(new_args, num_test_matchs, logger)
+        percentage = won_matchs / num_test_matchs
+        com_print('STATE:%s... WON MATCHS:%d/%d TOTAL REWARDS:%d' % (state, won_matchs, num_test_matchs, total_reward))
 
     if args.play:
         args.state = 'VeryEasy_Yokozuna-07'

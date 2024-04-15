@@ -157,11 +157,8 @@ def main():
         env=train_env, 
         learning_rate=lambda f: f * 2.5e-4, 
         n_steps=128, 
-        batch_size=32, 
-        n_epochs=4, 
         gamma=0.99, 
         gae_lambda=0.95, 
-        clip_range=0.1, 
         ent_coef=0.01, 
         verbose=1, 
         tensorboard_log=easy_log_dir 
