@@ -91,6 +91,7 @@ def test_model(args, num_matchs, logger):
     won_matchs = 0
     total_rewards = 0
     for i in range(0, num_matchs):
+        com_print('Playing on state: %s - %d iteration' % (new_args.state, i + 1))
         info, reward = game.play(continuous=False)
         if info[0].get('won_rounds') == 2:
             won_matchs += 1
