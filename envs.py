@@ -74,7 +74,7 @@ def make_retro(*, game, state=None, num_players, max_episode_steps=4500, **kwarg
     import retro
     if state is None:
         state = retro.State.DEFAULT
-    env = retro.make(game, state, **kwargs, players=num_players, render_mode="rgb_array")
+    env = retro.make(game, state, record=True, **kwargs, players=num_players, render_mode="rgb_array")
     # env = MultiBinaryToDiscreteActionWrapper(env) # Apply discrete wrapper
     if max_episode_steps is not None:
        env = TimeLimit(env, max_episode_steps=max_episode_steps)

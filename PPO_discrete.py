@@ -91,7 +91,7 @@ def make_retro(*, game, state=None, max_episode_steps=4500, **kwargs):
         state = retro.State.DEFAULT
     env = retro.make(game, state,render_mode="rgb_array", **kwargs)
     env = StochasticFrameSkip(env, n=4, stickprob=0.25)
-    env = MultiBinaryToDiscreteActionWrapper(env)  # Apply the new wrapper
+    # env = MultiBinaryToDiscreteActionWrapper(env)  # Apply the new wrapper
     if max_episode_steps is not None:
         env = TimeLimit(env, max_episode_steps=max_episode_steps)
     return env
@@ -160,7 +160,7 @@ def main():
         eval_env, 
         best_model_save_path=easy_log_dir, 
         log_path=easy_log_dir, 
-        eval_freq=500,  # frequency of evaluations 
+        eval_freq=3000,  # frequency of evaluations 
         deterministic=True, 
         render=False 
     ) 
@@ -181,7 +181,7 @@ def main():
     ) 
  
     model.learn( 
-        total_timesteps=200000,
+        total_timesteps=3000000,
         log_interval=1, 
         callback=eval_callback  # Attach evaluation callback 
     )
@@ -200,7 +200,7 @@ def main():
         eval_env, 
         best_model_save_path=hard_log_dir, 
         log_path=hard_log_dir, 
-        eval_freq=500,  # frequency of evaluations 
+        eval_freq=3000,  # frequency of evaluations 
         deterministic=True, 
         render=False 
     )
@@ -208,7 +208,7 @@ def main():
     prev_model_path = os.path.join(easy_log_dir, "best_model")
     model = PPO.load(os.path.expanduser(prev_model_path), env=train_env, tensorboard_log=hard_log_dir)
     model.learn( 
-        total_timesteps=200000, 
+        total_timesteps=3000000, 
         log_interval=1, 
         callback=eval_callback  # Attach evaluation callback 
     )

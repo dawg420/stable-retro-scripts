@@ -60,12 +60,15 @@ class ModelVsGame:
         state = self.display_env.reset()
 
         total_rewards = 0
+        
+
         skip_frames = 0
         p1_actions = []
         info = None
 
         while True:
             p1_actions = self.ai_sys.predict(state, info=info, deterministic=self.args.deterministic)
+            print(p1_actions)
 
             self.display_env.action_probabilities = []
             

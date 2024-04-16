@@ -21,7 +21,7 @@ from common import get_model_file_name, com_print, init_logger, create_output_di
 
 import game_wrappers_mgr as games
 
-NUM_TEST_MATCHS = 10
+NUM_TEST_MATCHS = 1
 
 
 
