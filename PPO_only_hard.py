@@ -149,45 +149,45 @@ def main():
         env = Monitor(env)  # Add this line to wrap the environment with Monitor
         return env
 
-    train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
-    eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
+#     train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
+#     eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
  
-    # Setup TensorBoard logging 
+#     # Setup TensorBoard logging 
     easy_log_dir = os.path.join(".", "logs", "easy_train")
  
-    # Callbacks for evaluation and saving the best model 
-    eval_callback = EvalCallback( 
-        eval_env, 
-        best_model_save_path=easy_log_dir, 
-        log_path=easy_log_dir, 
-        eval_freq=3000,  # frequency of evaluations 
-        deterministic=True, 
-        render=False 
-    ) 
+#     # Callbacks for evaluation and saving the best model 
+#     eval_callback = EvalCallback( 
+#         eval_env, 
+#         best_model_save_path=easy_log_dir, 
+#         log_path=easy_log_dir, 
+#         eval_freq=3000,  # frequency of evaluations 
+#         deterministic=True, 
+#         render=False 
+#     ) 
  
-    model = PPO( 
-        policy="CnnPolicy", 
-        env=train_env, 
-        learning_rate=lambda f: f * 2.5e-4, 
-        n_steps=128, 
-        batch_size=32, 
-        n_epochs=4, 
-        gamma=0.99, 
-        gae_lambda=0.95, 
-        clip_range=0.1, 
-        ent_coef=0.01, 
-        verbose=1, 
-        tensorboard_log=easy_log_dir 
-    ) 
+#     model = PPO( 
+#         policy="CnnPolicy", 
+#         env=train_env, 
+#         learning_rate=lambda f: f * 2.5e-4, 
+#         n_steps=128, 
+#         batch_size=32, 
+#         n_epochs=4, 
+#         gamma=0.99, 
+#         gae_lambda=0.95, 
+#         clip_range=0.1, 
+#         ent_coef=0.001, 
+#         verbose=1, 
+#         tensorboard_log=easy_log_dir 
+#     ) 
  
-    model.learn( 
-        total_timesteps=3000000,
-        log_interval=1, 
-        callback=eval_callback  # Attach evaluation callback 
-    )
+#     model.learn( 
+#         total_timesteps=3000000,
+#         log_interval=1, 
+#         callback=eval_callback  # Attach evaluation callback 
+#     )
     
-    train_env.close() 
-    eval_env.close()
+#     train_env.close() 
+#     eval_env.close()
     
     train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_hard] * 8), n_stack=4)) 
     eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_hard] * 8), n_stack=4)) 
