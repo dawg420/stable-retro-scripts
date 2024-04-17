@@ -2,6 +2,7 @@
 Play a pre-trained model on NHL 94
 """
 
+import time
 import os
 import sys
 import retro
@@ -60,18 +61,25 @@ class ModelVsGame:
         state = self.display_env.reset()
 
         total_rewards = 0
-        
-
         skip_frames = 0
         p1_actions = []
         info = None
 
+        start_time = time.time()  # Record the start time
+
         while True:
-            p1_actions = self.ai_sys.predict(state, info=info, deterministic=self.args.deterministic)
-            print(p1_actions)
+            # Check if 10 minutes have passed
+            if time.time() - start_time > 600:  # 600 seconds = 10 minutes
+                com_print("10-minute time limit reached. Timed out")
+                break
+
+            if self.args.alg == "DQN":
+                p1_actions = self.ai_sys.model.predict(state, deterministic=True)
+            else:
+                p1_actions = self.ai_sys.predict(state, info=info, deterministic=self.args.deterministic)
 
             self.display_env.action_probabilities = []
-            
+
             for i in range(4):
                 self.display_env.set_ai_sys_info(self.ai_sys)
                 state, reward, done, info = self.display_env.step(p1_actions)
@@ -83,6 +91,10 @@ class ModelVsGame:
                         state = self.display_env.reset()
                 else:
                     return info, total_rewards
+
+        # Optionally return values when time limit is reached
+        return info, total_rewards
+
 
 
 

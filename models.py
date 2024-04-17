@@ -1,7 +1,7 @@
 import warnings
 import os, datetime
 import numpy as np
-from stable_baselines3 import PPO, A2C
+from stable_baselines3 import PPO, A2C, DQN
 
 import torch as th
 from torchsummary import summary
@@ -52,6 +52,11 @@ def init_model(output_path, player_model, player_alg, args, env, logger):
             model = A2C(policy=args.nn, env=env, policy_kwargs=policy_kwargs, verbose=1)
         else:
             model = A2C.load(os.path.expanduser(player_model), env=env)
+    elif player_alg == 'DQN':
+        if player_model == '':
+            model = DQN(policy=args.nn, env=env, policy_kwargs=policy_kwargs, verbose=1)
+        else:
+            model = DQN.load(os.path.expanduser(player_model), env=env)
 
     model.set_logger(logger)
 

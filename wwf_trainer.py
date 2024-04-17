@@ -77,8 +77,20 @@ train_states = [
 ] 
  
 test_states = [
-    'VeryEasy_Yokozuna-04', 
-    'VeryHard_Yokozuna-02', 
+    'VeryEasy_Yokozuna-01',
+    'VeryEasy_Yokozuna-02',
+    'VeryEasy_Yokozuna-03',
+    'VeryEasy_Yokozuna-04',
+    'VeryEasy_Yokozuna-05',
+    'VeryEasy_Yokozuna-06',
+    'VeryEasy_Yokozuna-07',
+    'VeryHard_Yokozuna-01',
+    'VeryHard_Yokozuna-02',
+    'VeryHard_Yokozuna-03',
+    'VeryHard_Yokozuna-04',
+    'VeryHard_Yokozuna-05',
+    'VeryHard_Yokozuna-06',
+    'VeryHard_Yokozuna-07'
 ]
 
 def test_model(args, num_matchs, logger):
@@ -93,6 +105,9 @@ def test_model(args, num_matchs, logger):
     for i in range(0, num_matchs):
         com_print('Playing on state: %s - %d iteration' % (new_args.state, i + 1))
         info, reward = game.play(continuous=False)
+        com_print(info)
+        com_print("--------------")
+        com_print(reward)
         if info[0].get('won_rounds') == 2:
             won_matchs += 1
         total_rewards += reward
