@@ -71,7 +71,7 @@ class ModelVsGame:
             # Check if 10 minutes have passed
             if time.time() - start_time > 600:  # 600 seconds = 10 minutes
                 com_print("10-minute time limit reached. Timed out")
-                break
+                return info, total_rewards
 
             if self.args.alg == "DQN":
                 p1_actions = self.ai_sys.model.predict(state, deterministic=True)
