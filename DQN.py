@@ -146,39 +146,39 @@ def main():
         env = Monitor(env)  # Add this line to wrap the environment with Monitor
         return env
 
-    # train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
-    # eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
+    train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
+    eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_easy] * 8), n_stack=4)) 
  
     # Setup TensorBoard logging 
     easy_log_dir = os.path.join(".", "logs", "easy_train")
  
 #     # Callbacks for evaluation and saving the best model 
-#     eval_callback = EvalCallback( 
-#         eval_env, 
-#         best_model_save_path=easy_log_dir, 
-#         log_path=easy_log_dir, 
-#         eval_freq=500,  # frequency of evaluations 
-#         deterministic=True, 
-#         render=False 
-#     ) 
+    eval_callback = EvalCallback( 
+        eval_env, 
+        best_model_save_path=easy_log_dir, 
+        log_path=easy_log_dir, 
+        eval_freq=500,  # frequency of evaluations 
+        deterministic=True, 
+        render=False 
+    ) 
  
-#     model = DQN( 
-#         policy="CnnPolicy", 
-#         env=train_env, 
-#         learning_rate=lambda f: f * 2.5e-4, 
-#         gamma=0.99, 
-#         verbose=1,
-#         tensorboard_log=easy_log_dir 
-#     ) 
+    model = DQN( 
+        policy="CnnPolicy", 
+        env=train_env, 
+        learning_rate=lambda f: f * 2.5e-4, 
+        gamma=0.99, 
+        verbose=1,
+        tensorboard_log=easy_log_dir 
+    ) 
  
-#     model.learn( 
-#         total_timesteps=200000,
-#         log_interval=1, 
-#         callback=eval_callback  # Attach evaluation callback 
-#     )
+    model.learn( 
+        total_timesteps=200000,
+        log_interval=1, 
+        callback=eval_callback  # Attach evaluation callback 
+    )
     
-    # train_env.close() 
-    # eval_env.close()
+    train_env.close() 
+    eval_env.close()
     
     train_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_hard] * 8), n_stack=4)) 
     eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env_hard] * 8), n_stack=4)) 
